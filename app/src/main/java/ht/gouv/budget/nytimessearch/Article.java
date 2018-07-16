@@ -27,7 +27,7 @@ public class Article implements Serializable {
     public Article(JSONObject jsonObject) {
         try {
             this.webUrl = jsonObject.getString("web_url");
-            this.headLine = jsonObject.getString("headLine");
+            this.headLine = jsonObject.getJSONObject("headline").getString("main");
                     //.getString("main");
 
             JSONArray multimedia = jsonObject.getJSONArray("multimedia");
@@ -39,7 +39,7 @@ public class Article implements Serializable {
                 this.thumbNail = "";
             }
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
     }
 

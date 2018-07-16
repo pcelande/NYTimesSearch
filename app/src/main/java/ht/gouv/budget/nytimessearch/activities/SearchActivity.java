@@ -51,7 +51,7 @@ public class SearchActivity extends AppCompatActivity {
         btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
-        gvResults.setAdapter(adapter);
+       gvResults.setAdapter(adapter);
 
         // hook up listener for grid click
         gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,7 +66,7 @@ public class SearchActivity extends AppCompatActivity {
                 // launch the activity
                 startActivity(i);
             }
-        };
+        });
     }
 
     @Override
@@ -80,7 +80,7 @@ public class SearchActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //if (id == R.id.action_settings) {
-          //  return true;
+        //  return true;
         //}
         return super.onOptionsItemSelected(item);
     }
@@ -93,7 +93,7 @@ public class SearchActivity extends AppCompatActivity {
         String url = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
 
         RequestParams params = new RequestParams();
-        params.put("api-key", " d8a675f7d3cc4d1e9835f08c7a8987fe");
+        params.put("api-key", "d8a675f7d3cc4d1e9835f08c7a8987fe");
         params.put("page", 0);
         params.put("q", query);
 
@@ -107,10 +107,25 @@ public class SearchActivity extends AppCompatActivity {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
                     adapter.addAll(Article.fromJSONArray(articleJsonResults));
                     Log.d("DEBUG", articles.toString());
+                    adapter.notifyDataSetChanged();
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-        };
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                if(throwable != null) {
+                    Log.d("SearchActivity", throwable.getMessage());
+                }
+
+                if(errorResponse != null) {
+                    Log.d("SearchActivity", errorResponse.toString());
+                }
+            }
+        });
     }
 }
